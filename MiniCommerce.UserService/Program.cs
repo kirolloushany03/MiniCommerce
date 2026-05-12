@@ -1,41 +1,54 @@
+using Microsoft.EntityFrameworkCore;
+using MiniCommerce.UserService.Brokers.Storages;
+using MiniCommerce.UserService.Controllers;
+using MiniCommerce.UserService.Services.Foundations;
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+// 1. Database Setup (SQLite)
+builder.Services.AddDbContext<StorageBroker>(options =>
+    options.UseSqlite("Data Source=users.db"));
+
+// 2. Dependency Injection (DI)
+builder.Services.AddScoped<IStorageBroker, StorageBroker>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+// 3. OpenAPI Documentation Setup (New in .NET 9/10)
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// 4. Auto-Create Database on Startup (Magic! ✨)
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
+    var broker = scope.ServiceProvider.GetRequiredService<StorageBroker>();
+    broker.Database.EnsureCreated();
 }
 
-app.UseHttpsRedirection();
+app.MapOpenApi();
+app.MapScalarApiReference();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.MapUserEndpoints();
 
-app.MapGet("/weatherforecast", () =>
+
+app.Lifetime.ApplicationStarted.Register(() =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    var urls = app.Urls;
+
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("\n=========================================");
+    Console.WriteLine(" MICROSERVICE STARTED SUCCESSFULLY ");
+    Console.WriteLine("=========================================\n");
+
+    foreach (var url in urls)
+    {
+        Console.WriteLine($" Scalar UI: {url}/scalar/v1");
+        Console.WriteLine($" OpenAPI JSON: {url}/openapi/v1.json\n");
+    }
+    Console.ResetColor();
+});
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
