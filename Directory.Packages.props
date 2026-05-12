@@ -1,0 +1,12 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.7" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7" />
+	  <PackageVersion Include="Confluent.Kafka" Version="2.6.1" />
+	  
+	  <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" />
+	  <PackageVersion Include="Scalar.AspNetCore" Version="2.14.11" />
+
+	  <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+  </ItemGroup>
+</Project>
