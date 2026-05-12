@@ -3,5 +3,6 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Project Path="MiniCommerce.ProductService/MiniCommerce.ProductService.csproj" />
   <Project Path="MiniCommerce.UserService/MiniCommerce.UserService.csproj" />
 </Solution>
