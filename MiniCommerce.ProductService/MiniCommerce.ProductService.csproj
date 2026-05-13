@@ -14,4 +14,8 @@
 		<PackageReference Include="Confluent.Kafka" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\MiniCommerce.Shared\MiniCommerce.Shared.csproj" />
+	</ItemGroup>
+
 </Project>
