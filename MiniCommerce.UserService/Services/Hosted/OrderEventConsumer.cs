@@ -3,7 +3,7 @@ using MiniCommerce.UserService.Services.Foundations;
 using MiniCommerce.Shared.Events;
 using System.Text.Json;
 
-namespace MiniCommerce.ProductService.Services.Hosted;
+namespace MiniCommerce.UserService.Services.Hosted;
 
 public class OrderEventConsumer(IConfiguration configuration, IServiceScopeFactory scopeFactory, ILogger<OrderEventConsumer> logger) : BackgroundService
 {
