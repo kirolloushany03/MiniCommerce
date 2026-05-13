@@ -3,16 +3,21 @@ using MiniCommerce.ProductService.Brokers.Storages;
 using MiniCommerce.ProductService.Controllers;
 using MiniCommerce.ProductService.Services.Foundations;
 using Scalar.AspNetCore;
+using MiniCommerce.ProductService.Services.Hosted;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Database Setup
 builder.Services.AddDbContext<StorageBroker>(options =>
-    options.UseSqlite("Data Source=products.db"));
+    options.UseSqlite("Data Source=Database/products.db"));
 
 // 2. Dependency Injection
 builder.Services.AddScoped<IStorageBroker, StorageBroker>();
 builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddHostedService<OrderEventConsumer>();
+
 
 // 3. OpenAPI Docs
 builder.Services.AddOpenApi();
