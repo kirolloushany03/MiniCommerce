@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <UserSecretsId>ec63fce3-a54c-42b5-a01b-fb357389b40a</UserSecretsId>
@@ -12,6 +12,10 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
 		<PackageReference Include="Confluent.Kafka" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MiniCommerce.Shared\MiniCommerce.Shared.csproj" />
 	</ItemGroup>
 
 
