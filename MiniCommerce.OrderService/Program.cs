@@ -2,16 +2,25 @@ using Microsoft.EntityFrameworkCore;
 using MiniCommerce.OrderService.Brokers.Storages;
 using MiniCommerce.OrderService.Controllers;
 using MiniCommerce.OrderService.Services.Foundations;
+using MiniCommerce.Shared.Brokers.Events;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<StorageBroker>(options =>
-    options.UseSqlite("Data Source=orders.db"));
+    options.UseSqlite("Data Source=Database/orders.db"));
 
 builder.Services.AddScoped<IStorageBroker, StorageBroker>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddSingleton<IEventPublisher, KafkaEventPublisher>();
+
+builder.Services.AddHttpClient("ProductClient", client =>
+{
+    var productServiceUrl = builder.Configuration["ProductServiceUrl"] ?? "http://localhost:5000";
+    client.BaseAddress = new Uri(productServiceUrl);
+});
 
 builder.Services.AddOpenApi();
 builder.Services.ConfigureHttpJsonOptions(options =>
