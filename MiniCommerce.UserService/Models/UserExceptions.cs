@@ -8,3 +8,6 @@ public class InvalidAmountException()
 
 public class EmailAlreadyInUseException()
     : Exception($"The email is already registerd.");
+
+public class InsufficientFundsException()
+    : Exception("Insufficient funds to complete the transaction.");
