@@ -21,6 +21,11 @@ builder.Services.AddHttpClient("ProductClient", client =>
     var productServiceUrl = builder.Configuration["ProductServiceUrl"] ?? "http://localhost:5000";
     client.BaseAddress = new Uri(productServiceUrl);
 });
+builder.Services.AddHttpClient("UserClient", client =>
+{
+    var userServiceUrl = builder.Configuration["UserServiceUrl"] ?? "http://localhost:5001";
+    client.BaseAddress = new Uri(userServiceUrl);
+});
 
 builder.Services.AddOpenApi();
 builder.Services.ConfigureHttpJsonOptions(options =>
