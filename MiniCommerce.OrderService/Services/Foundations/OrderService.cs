@@ -25,6 +25,19 @@ public class OrderService(IStorageBroker storageBroker, IEventPublisher eventPub
 
         decimal secureTotalPrice = product.Price * order.Quantity;
 
+        var userClient = httpClientFactory.CreateClient("UserClient");
+        var userResponse = await userClient.GetAsync($"/api/users/{order.UserId}");
+
+        if (!userResponse.IsSuccessStatusCode)
+            throw new Exception("User not found or User Service is down!");
+
+        var user = await userResponse.Content.ReadFromJsonAsync<UserResponseDto>();
+        if (user is null)
+            throw new Exception("Failed to read user data.");
+
+        if (user.WalletBalance < secureTotalPrice)
+            throw new Exception($"Insufficient funds. Order total is {secureTotalPrice}, but wallet only has {user.WalletBalance}.");
+        
         order.Status = OrderStatus.Pending; 
         await storageBroker.InsertOrderAsync(order);
 
