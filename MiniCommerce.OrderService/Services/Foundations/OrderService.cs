@@ -1,17 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MiniCommerce.OrderService.Brokers.Storages;
 using MiniCommerce.OrderService.Models;
+using MiniCommerce.Shared.Brokers.Events;
+using MiniCommerce.Shared.Events;
+using static MiniCommerce.OrderService.Models.DTOs.OrderDtos;
 
 namespace MiniCommerce.OrderService.Services.Foundations;
-public class OrderService(IStorageBroker storageBroker) : IOrderService
+public class OrderService(IStorageBroker storageBroker, IEventPublisher eventPublisher, IHttpClientFactory httpClientFactory) : IOrderService
 {
     public async ValueTask AddOrderAsync(Order order)
     {
         if (order.Quantity <= 0)
             throw new InvalidQuantityException();
 
-        order.Status = OrderStatus.Pending;
+        var client = httpClientFactory.CreateClient("ProductClient");
+        var response = await client.GetAsync($"/api/products/{order.ProductId}");
+        
+        if (!response.IsSuccessStatusCode)
+            throw new Exception("Product not found or Product Service is currently down!");
+
+        var product = await response.Content.ReadFromJsonAsync<ProductResponseDto>();
+        if (product is null)
+            throw new Exception("Failed to read product data.");
+
+        decimal secureTotalPrice = product.Price * order.Quantity;
+
+        order.Status = OrderStatus.Pending; 
         await storageBroker.InsertOrderAsync(order);
+
+        var orderEvent = new OrderCreatedEvent(
+           order.Id,
+           order.UserId,
+           order.ProductId,
+           order.Quantity,
+           secureTotalPrice
+       );
+
+        await eventPublisher.PublishAsync("order-events", orderEvent);
     }
 
     public async ValueTask<IEnumerable<Order>> RetrieveAllOrdersAsync()
