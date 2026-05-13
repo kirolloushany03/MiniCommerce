@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MiniCommerce.ProductService.Services.Hosted;
 using MiniCommerce.UserService.Brokers.Storages;
 using MiniCommerce.UserService.Controllers;
 using MiniCommerce.UserService.Services.Foundations;
@@ -9,11 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Database Setup (SQLite)
 builder.Services.AddDbContext<StorageBroker>(options =>
-    options.UseSqlite("Data Source=users.db"));
+    options.UseSqlite("Data Source=Database/users.db"));
 
 // 2. Dependency Injection (DI)
 builder.Services.AddScoped<IStorageBroker, StorageBroker>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddHostedService<OrderEventConsumer>();
+
 
 // 3. OpenAPI Documentation Setup (New in .NET 9/10)
 builder.Services.AddOpenApi();
