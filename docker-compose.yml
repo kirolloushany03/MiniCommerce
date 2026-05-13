@@ -66,10 +66,12 @@ services:
     environment:
       - Kafka__BootstrapServers=kafka:29092
       - ProductServiceUrl=http://product-service:8080
+      - UserServiceUrl=http://user-service:8080
     volumes:
       - ./DockerData/Orders:/app/Database
     depends_on:
       - kafka
       - product-service
+      - user-service
     networks:
       - commerce-network
