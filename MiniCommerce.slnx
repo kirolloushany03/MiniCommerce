@@ -5,5 +5,6 @@
   </Folder>
   <Project Path="MiniCommerce.OrderService/MiniCommerce.OrderService.csproj" />
   <Project Path="MiniCommerce.ProductService/MiniCommerce.ProductService.csproj" />
+  <Project Path="MiniCommerce.Shared/MiniCommerce.Shared.csproj" />
   <Project Path="MiniCommerce.UserService/MiniCommerce.UserService.csproj" />
 </Solution>
