@@ -61,4 +61,20 @@ public class UserService(IStorageBroker storageBroker) : IUserService
         await storageBroker.UpdateUserAsync(user);
     }
 
+    public async ValueTask DeductBalanceAsync(Guid id, decimal amount)
+    {
+        if (amount <= 0)
+            throw new InvalidAmountException();
+
+        var user = await storageBroker.SelectUserByIdAsync(id);
+        if (user is null)
+            throw new UserNotFoundException();
+
+        if (user.WalletBalance < amount)
+            throw new InsufficientFundsException();
+
+        user.WalletBalance -= amount;
+        await storageBroker.UpdateUserAsync(user);
+    }
+
 }
