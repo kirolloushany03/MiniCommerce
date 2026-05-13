@@ -11,4 +11,6 @@ public interface IUserService
         ValueTask RemoveUserByIdAsync(Guid id);
 
         ValueTask AddBalanceAsync(Guid id, decimal amount);
+         ValueTask DeductBalanceAsync(Guid id, decimal amount);
+
 }
