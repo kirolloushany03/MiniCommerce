@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using MiniCommerce.ProductService.Services.Hosted;
 using MiniCommerce.UserService.Brokers.Storages;
 using MiniCommerce.UserService.Controllers;
 using MiniCommerce.UserService.Services.Foundations;
+using MiniCommerce.UserService.Services.Hosted;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
